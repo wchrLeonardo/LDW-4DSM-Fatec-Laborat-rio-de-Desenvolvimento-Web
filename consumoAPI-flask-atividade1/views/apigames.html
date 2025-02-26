@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-5 text-uppercase fw-bold">Imagem Astronômica do Dia</h2>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Card para exibir a imagem e os dados -->
+            <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+                <img src="{{ gamesjson['hdurl'] }}" class="card-img-top" alt="Imagem Astronômica do Dia">
+                <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold">{{ gamesjson['title'] }}</h5>
+                    <p class="card-text"><strong>Data:</strong> {{ gamesjson['date'] }}</p>
+                    <p class="card-text"><strong>Descrição:</strong> {{ gamesjson['explanation'] }}</p>
+                    <p class="card-text"><strong>Fonte:</strong> {{ gamesjson['copyright'] }}</p>
+                    <a href="{{ gamesjson['url'] }}" class="btn btn-outline-primary w-100 mt-2" target="_blank">Ver Imagem Completa</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
