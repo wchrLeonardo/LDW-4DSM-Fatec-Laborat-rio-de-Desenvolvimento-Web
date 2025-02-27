@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-5">
+  <h2 class="text-center mb-4 text-primary">Imagens de Marte</h2>
+
+  <!-- Formulário para seleção de data e câmera -->
+  <form method="POST" class="mb-5">
+    <div class="row align-items-end">
+      <!-- Seletor de data -->
+      <div class="col-md-4 mb-3">
+        <label for="earth_date" class="form-label">Escolha a Data</label>
+        <input type="date" id="earth_date" name="earth_date" class="form-control"
+          value="{{ request.form.earth_date or '2022-01-01' }}" required>
+      </div>
+      <!-- Botões para escolha da câmera -->
+      <div class="col-md-8 mb-3">
+        <label class="form-label d-block">Escolha a Câmera</label>
+        <!-- Input oculto para armazenar o valor selecionado -->
+        <input type="hidden" name="camera" id="camera" value="{{ request.form.camera or 'FHAZ' }}">
+        <div class="btn-group" role="group" aria-label="Câmeras">
+          <button type="button" class="btn btn-outline-primary camera-btn" data-value="FHAZ">FHAZ</button>
+          <button type="button" class="btn btn-outline-primary camera-btn" data-value="RHAZ">RHAZ</button>
+          <button type="button" class="btn btn-outline-primary camera-btn" data-value="MAST">MAST</button>
+          <button type="button" class="btn btn-outline-primary camera-btn" data-value="CHEMCAM">CHEMCAM</button>
+          <button type="button" class="btn btn-outline-primary camera-btn" data-value="MAHLI">MAHLI</button>
+          <button type="button" class="btn btn-outline-primary camera-btn" data-value="MARDI">MARDI</button>
+          <button type="button" class="btn btn-outline-primary camera-btn" data-value="NAVCAM">NAVCAM</button>
+        </div>
+      </div>
+    </div>
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary">Buscar Imagens</button>
+    </div>
+  </form>
+
+{% set per_page = 9 %}
+{% set total_pages = (data.photos|length // per_page) + (1 if data.photos|length % per_page > 0 else 0) %}
+{% set start = (current_page - 1) * per_page %}
+{% set end = start + per_page %}
+
+
+  <!-- Exibição das imagens -->
+  <div class="row">
+    {% if data.photos|length > 0 %}
+    {% for photo in data.photos %}
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <img src="{{ photo.img_src }}" class="card-img-top" alt="Foto de Marte">
+        <div class="card-body">
+          <h5 class="card-title">Rover: {{ photo.rover.name }}</h5>
+          <p class="card-text">
+            📅 <strong>Data:</strong> {{ photo.earth_date }}<br>
+            🌞 <strong>Sol:</strong> {{ photo.sol }}<br>
+            📷 <strong>Câmera:</strong> {{ photo.camera.full_name }}
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% elif data.photos|length == 0 %}
+    <div class="text-center text-muted fs-4">
+      🚀 Nenhuma imagem disponível para essa data e câmera.
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+
+<!-- Paginação -->
+{% if total_pages > 1 %}
+<div class="d-flex justify-content-center mt-4">
+  <nav>
+    <ul class="pagination">
+      {% if current_page > 1 %}
+        <li class="page-item">
+          <a class="page-link" href="?earth_date={{ request.args.get.earth_date }}&camera={{ request.args.get.camera }}&page={{ current_page - 1 }}">Anterior</a>
+        </li>
+      {% endif %}
+      
+      {% for i in range(1, total_pages + 1) %}
+        <li class="page-item {% if i == current_page %}active{% endif %}">
+          <a class="page-link" href="?earth_date={{ request.args.get.earth_date }}&camera={{ request.args.get.camera }}&page={{ i }}">{{ i }}</a>
+        </li>
+      {% endfor %}
+
+      {% if current_page < total_pages %}
+        <li class="page-item">
+          <a class="page-link" href="?earth_date={{ request.args.get.earth_date }}&camera={{ request.args.get.camera }}&page={{ current_page + 1 }}">Próxima</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endif %}
+
+
+<!-- JavaScript para ativar a seleção dos botões de câmera -->
+<script>
+  // Seleciona todos os botões de câmera e o input oculto
+  const cameraButtons = document.querySelectorAll('.camera-btn');
+  const cameraInput = document.getElementById('camera');
+
+  cameraButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remove a classe active de todos os botões
+      cameraButtons.forEach(b => b.classList.remove('active'));
+      // Adiciona a classe active ao botão clicado
+      btn.classList.add('active');
+      // Atualiza o valor do input oculto com o valor do botão
+      cameraInput.value = btn.getAttribute('data-value');
+    });
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  crossorigin="anonymous"></script>
+
+{% endblock content %}

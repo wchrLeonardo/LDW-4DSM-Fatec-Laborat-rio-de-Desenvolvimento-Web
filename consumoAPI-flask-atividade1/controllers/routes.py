@@ -2,7 +2,9 @@ from flask import render_template, request, redirect, url_for
 import urllib
 import json
 import requests
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 jogadores = []
 gamelist = [{"Titulo": "CS-GO",
@@ -30,37 +32,20 @@ def init_app(app):
 
         return render_template('games.html', games=games, jogadores=jogadores)
 
-    @app.route('/cad_games', methods=['GET', 'POST'])
-    def cad_games():
-        if request.method == 'POST':
-            novo_jogo = {
-                "Titulo": request.form.get('titulo'),
-                "Ano": int(request.form.get('ano')),
-                "Categoria": request.form.get('categoria')
-            }
-            gamelist.append(novo_jogo)
-            return redirect(url_for('cad_games'))
-        return render_template('cad_games.html',gamelist=gamelist)
     
-    # @app.route('/apigames', methods=['GET', 'POST'])
-    # @app.route('/apigames/<int:id>', methods=['GET', 'POST'])
-    # def apigames(id=None):
-    #     url = 'https://api.nasa.gov/planetary/apod?api_key=9UouOIjOPm74WfGTenuMGmicMteJkzwOPixwfxzn'
-    #     response = urllib.request.urlopen(url)
-    #     data = response.read()
-    #     gamesjson = json.loads(data)
-    #     if id:
-    #         ginfo = []
-    #         for g in gamesjson:
-    #             if g['id'] == id:
-    #                 ginfo=g 
-    #                 break
-    #         if ginfo:
-    #             return render_template('gameinfo.html', ginfo=ginfo)
-    #         else:
-    #             return f'Jogo com {id} não encontrado'
-                    
-    #     return render_template('apigames.html',gamesjson=gamesjson)
+    @app.route('/imagens_marte', methods=['GET', 'POST'])
+    def marte():
+
+        earth_date = request.form.get('earth_date', '2022-01-01')
+        camera = request.form.get('camera', 'fhaz')
+        API_KEY = os.getenv("API_KEY")
+        page = request.args.get('page', 1, type=int)  # Pegando a página corretamente
+
+        url = f'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date={earth_date}&camera={camera}&api_key={API_KEY}'
+        response = requests.get(url) 
+        data_marte = response.json()  
+        
+        return render_template('imagens_marte.html', data=data_marte, current_page=page)
 
 
     @app.route('/nasateste', methods=['GET', 'POST'])
