@@ -2,15 +2,9 @@ from flask import render_template, request, redirect, url_for
 import urllib
 import json
 import requests
-
-
-jogadores = []
-gamelist = [{"Titulo": "CS-GO",
-         "Ano": 2017,
-          "Categoria": "FPS-Online"
-         }, {
-             
-         }]
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def init_app(app):
@@ -20,31 +14,45 @@ def init_app(app):
     def home():
         return render_template('index.html')
 
-    @app.route('/games', methods=['POST', 'GET'])
-    def games():
-        games = gamelist[0]
-        if request.method == 'POST':
-            nome_jogador = request.form.get('Jogador')
-            jogadores.append(nome_jogador)
-            return redirect(url_for('games'))
-
-        return render_template('games.html', games=games, jogadores=jogadores)
-
-    
-    @app.route('/marte', methods=['GET', 'POST'])
-    def marte():
-        url = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&camera=mast&api_key=9UouOIjOPm74WfGTenuMGmicMteJkzwOPixwfxzn'
-        response = requests.get(url)  # Melhor do que urllib
-        data = response.json()  # Converte diretamente para JSON
+    @app.route('/exo_planetas', methods=['POST', 'GET'])
+    def planetas():
         
-        return render_template('imagens_marte.html', data=data)
+        page = int(request.args.get('page', 1))  # Obtém a página atual, padrão 1
+        per_page = 20  # Quantidade por página
+        start = (page - 1) * per_page
+        end = start + per_page
+        
+        url = f'https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=SELECT+pl_name,hostname,disc_year,pl_orbper,pl_rade,pl_bmasse,st_teff,st_rad,st_mass,sy_dist+FROM+pscomppars&format=json'
+        response = requests.get(url)
+        exo_data = response.json()
+        
+        total_pages = len(exo_data) // per_page + 1
+        return render_template('exo_planetas.html', data=exo_data[start:end], current_page=page, total_pages=total_pages)
+    
+    @app.route('/imagens_marte', methods=['GET', 'POST'])
+    def marte():
+        API_KEY = os.getenv("API_KEY")
+        if request.method == 'POST':
+            earth_date = request.form.get('earth_date', '2022-01-01')
+            camera = request.form.get('camera', 'fhaz')
+            return redirect(url_for('marte', earth_date=earth_date, camera=camera))
+        
+        earth_date = request.args.get('earth_date', '2022-01-13')
+        camera = request.args.get('camera', 'mahli')
+        page = request.args.get('page', 1, type=int)  # Pegando a página corretamente
+
+        url = f'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date={earth_date}&camera={camera}&api_key={API_KEY}'
+        response = requests.get(url) 
+        data_marte = response.json()  
+        
+        return render_template('imagens_marte.html', data=data_marte, current_page=page)
 
 
-    @app.route('/nasateste', methods=['GET', 'POST'])
+    @app.route('/imagem_do_dia', methods=['GET', 'POST'])
     def nasateste():
         url = 'https://api.nasa.gov/planetary/apod?api_key=9UouOIjOPm74WfGTenuMGmicMteJkzwOPixwfxzn'
         response = requests.get(url)  # Melhor do que urllib
-        data = response.json()  # Converte diretamente para JSON
+        data_imagem = response.json()  # Converte diretamente para JSON
     
-        return render_template('apigames.html', gamesjson=data)
+        return render_template('imagem_dia.html', data=data_imagem)
 

@@ -1,3 +1,19 @@
+@font-face {
+    font-family: '13_Misa';
+    src: url('../fonts/13misa/13_Misa.TTF') format('truetype');
+
+  }
+  
+  .title-page{
+    color: #d07001;
+    font-size: 3rem;
+    font-family: '13_Misa';
+}
+
+.subtitle-page{
+    color: #54360f;
+}
+
 /* Fundo da navbar */
 .navbar {
     background: #fefefe; /* Azul escuro espacial */
@@ -47,7 +63,7 @@
     display: block;
     width: 0;
     height: 3px;
-    background: #00aaff;
+    background: #ecb309;
     transition: width 0.3s ease-in-out;
     position: absolute;
     bottom: -3px;
@@ -56,7 +72,7 @@
 }
 
 .navbar-nav .nav-link:hover {
-    color: #00aaff;
+    color: #ae6300;
 }
 
 .navbar-nav .nav-link:hover::after {
@@ -74,4 +90,52 @@
     .navbar-nav .nav-link {
         font-size: 1rem;
     }
+}
+
+
+
+.camera-btn.active {
+    font-weight: 700;
+  }
+  .card-img-top {
+    object-fit: cover;
+    height: 220px;
+  }
+
+.texto-btn{
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    color: #414141;
+    /* font-weight: 500; */
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #d07001; /* Cor de fundo */
+    border-color: #d07001; /* Cor da borda */
+    color: white; /* Cor do texto */
+}
+
+.pagination .page-link {
+    color: #d07001; /* Cor do texto */
+    
+}
+
+.pagination .page-link:hover {
+    background-color: #4e4c49; /* Cor ao passar o mouse */
+    color: #ffffff; /* Cor do texto ao passar o mouse */
+}
+.pagination .page-link:focus {
+    box-shadow: none;
+}
+
+.bloco-1-1{
+    background-color: #000000;
+    width: 400px;
+    height: 200px;
+}
+
+.secao1{
+    display: flex;
+    justify-content: space-around;
 }
