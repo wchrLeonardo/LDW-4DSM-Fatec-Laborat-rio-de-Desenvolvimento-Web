@@ -1,11 +1,16 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, current_app
+
 import urllib
 import json
 import requests
 import os
+from datetime import datetime
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 load_dotenv()
 
+
+constelacoes = []
 
 def init_app(app):
     # criando a primeira rota da aplicação
@@ -55,4 +60,41 @@ def init_app(app):
         data_imagem = response.json()  # Converte diretamente para JSON
     
         return render_template('imagem_dia.html', data=data_imagem)
+    
 
+
+    @app.route('/sua_constelacao', methods=['GET', 'POST'])
+    def constelacao():
+        if request.method == "POST":
+            nome_constelacao = request.form["nome_constelacao"]
+            distancia = request.form["distancia"]
+            magnitude = request.form["magnitude"]
+            nome_usuario = request.form["nome_usuario"]
+
+            imagem = request.files["imagem"]
+
+            if imagem and imagem.filename:
+                filename = secure_filename(imagem.filename)
+                caminho = os.path.join("uploads", filename)
+                imagem.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
+                # Corrigir a barra invertida para barra normal (no caso do Windows)
+                caminho = caminho.replace("\\", "/")
+
+            else:
+                caminho = "uploads/default.jpg"
+            
+            data_registro = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+            constelacoes.append({
+                "nome_constelação": nome_constelacao,
+                "distancia": distancia,
+                "magnitude": magnitude,
+                "nome_usuario": nome_usuario,
+                "data_registro": data_registro,
+                "imagem": caminho
+            })
+
+            return redirect(url_for("constelacao"))
+        
+
+        return render_template("constelacao.html", constelacoes=constelacoes)

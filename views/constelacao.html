@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body class="bg-dark text-light">
+    <div class="container mt-5">
+        <!-- Título de Cadastro -->
+        <h1 class="text-warning text-center mb-4">Cadastrar uma Constelação</h1>
+
+        <!-- Formulário de Cadastro -->
+        <form method="POST" enctype="multipart/form-data" class="mt-4 p-4 bg-secondary rounded shadow-lg">
+            <div class="mb-3">
+                <label class="form-label">Nome da Constelação</label>
+                <input type="text" class="form-control" name="nome_constelacao" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Distância (anos-luz)</label>
+                <input type="number" step="0.1" class="form-control" name="distancia" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Magnitude</label>
+                <select class="form-select" name="magnitude" required>
+                    <option value="1">Extremamente Brilhante</option>
+                    <option value="2">Brilhante</option>
+                    <option value="3">Moderada</option>
+                    <option value="4">Fraca</option>
+                    <option value="5">Muito Fraca</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nome do Usuário</label>
+                <input type="text" class="form-control" name="nome_usuario" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Imagem (opcional)</label>
+                <input type="file" class="form-control" name="imagem" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-warning w-100">Cadastrar</button>
+        </form>
+
+        <!-- Exibição de Constelações Cadastradas -->
+        <h2 class="mt-5 text-center text-warning">Constelações Cadastradas</h2>
+        <div class="row mt-3">
+            {% for constelacao in constelacoes %}
+                <div class="col-md-4 mb-4">
+                    <div class="card bg-dark text-light border-warning animate__animated animate__fadeInUp">
+                        <img src="{{ url_for('static', filename=constelacao['imagem']) }}" class="card-img-top" alt="Imagem da constelação">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">{{ constelacao.nome_constelacao }}</h5>
+                            <p class="card-text">Distância: <strong>{{ constelacao.distancia }}</strong> anos-luz</p>
+                            <p class="card-text">Magnitude: <strong>{{ constelacao.magnitude }}</strong></p>
+                            <p class="card-text">Registrado por: <strong>{{ constelacao.nome_usuario }}</strong></p>
+                            <p class="card-text">Data de Registro: {{ constelacao.data_registro }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Seção para Inserir Dados via Dicionário -->
+        <h2 class="mt-5 text-center text-warning">Inserir Dados via Dicionário</h2>
+        <form method="POST" action="{{ url_for('insert_dict') }}" class="mt-4 p-4 bg-secondary rounded shadow-lg">
+            <div class="mb-3">
+                <label class="form-label">Nome</label>
+                <input type="text" class="form-control" name="nome" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Descrição</label>
+                <input type="text" class="form-control" name="descricao" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Valor</label>
+                <input type="number" class="form-control" name="valor" required>
+            </div>
+            <button type="submit" class="btn btn-warning w-100">Adicionar ao Dicionário</button>
+        </form>
+
+        <!-- Exibição de Dados do Dicionário -->
+        <h2 class="mt-5 text-center text-warning">Dicionário de Dados</h2>
+        <div class="table-responsive mt-3">
+            <table class="table table-striped table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in dicionario %}
+                    <tr class="animate__animated animate__fadeInUp">
+                        <td>{{ item.nome }}</td>
+                        <td>{{ item.descricao }}</td>
+                        <td>{{ item.valor }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+{% endblock %}
