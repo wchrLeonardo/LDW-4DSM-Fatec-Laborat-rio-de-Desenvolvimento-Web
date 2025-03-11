@@ -2,42 +2,36 @@
 {% block content %}
 
 <div class="container mt-4">
-    <h1 class="text-center mt-4 mb-4 title-page">Lista de Exoplanetas</h1>
+    <h1 class="text-center mt-5 mb-5 title-page text-warning">Exoplanetas Descobertos</h1>
     
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Ano da Descoberta</th>
-                <th>Massa (M⊕)</th>
-                <th>Raio (R⊕)</th>
-                <th>Distância (anos-luz)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for planet in data %}
-            <tr>
-                <td>{{ planet.pl_name }}</td>
-                <td>{{ planet.disc_year or 'N/A' }}</td>
-                <td>{{ planet.pl_bmasse or 'N/A' }}</td>
-                <td>{{ planet.pl_rade or 'N/A' }}</td>
-                <td>{{ planet.sy_dist or 'N/A' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <div class="row g-4 mt-5">
+        {% for planet in data %}
+        <div class="col-md-4">
+            <div class="card exoplanet-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ planet.pl_name }}</h5>
+                    <p class="card-text"><strong>Ano da Descoberta:</strong> {{ planet.disc_year or 'N/A' }}</p>
+                    <p class="card-text"><strong>Massa:</strong> {{ planet.pl_bmasse or 'N/A' }} M⊕</p>
+                    <p class="card-text"><strong>Raio:</strong> {{ planet.pl_rade or 'N/A' }} R⊕</p>
+                    <p class="card-text"><strong>Distância:</strong> {{ planet.sy_dist or 'N/A' }} anos-luz</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
-<div class="d-flex justify-content-center mt-5 mb-4">
-    {% if current_page > 1 %}
-        <a href="?page={{ current_page - 1 }}" class="btn btn-primary me-2">Anterior</a>
-    {% endif %}
+    <!-- Paginação -->
+    <div class="d-flex justify-content-center mt-5">
+        {% if current_page > 1 %}
+            <a href="?page={{ current_page - 1 }}" class="pagination-btn">❮</a>
+        {% endif %}
 
-    <span>Página {{ current_page }} de {{ total_pages }}</span>
+        <span class="pagination-text">Página {{ current_page }} de {{ total_pages }}</span>
 
-    {% if current_page < total_pages %}
-        <a href="?page={{ current_page + 1 }}" class="btn btn-primary ms-2">Próxima</a>
-    {% endif %}
+        {% if current_page < total_pages %}
+            <a href="?page={{ current_page + 1 }}" class="pagination-btn">❯</a>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock content %}

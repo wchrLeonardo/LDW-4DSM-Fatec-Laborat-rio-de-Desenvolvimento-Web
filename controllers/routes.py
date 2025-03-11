@@ -17,7 +17,10 @@ def init_app(app):
     @app.route('/')
     # view function -> função de visualização
     def home():
-        return render_template('index.html')
+        url = 'https://api.nasa.gov/planetary/apod?api_key=9UouOIjOPm74WfGTenuMGmicMteJkzwOPixwfxzn'
+        response = requests.get(url)  # Melhor do que urllib
+        data_imagem = response.json()  # Converte diretamente para JSON
+        return render_template('index.html', data=data_imagem)
 
     @app.route('/exo_planetas', methods=['POST', 'GET'])
     def planetas():
@@ -95,6 +98,6 @@ def init_app(app):
             })
 
             return redirect(url_for("constelacao"))
-        
+
 
         return render_template("constelacao.html", constelacoes=constelacoes)

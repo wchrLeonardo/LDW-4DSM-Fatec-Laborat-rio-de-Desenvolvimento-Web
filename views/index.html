@@ -1,33 +1,102 @@
 {% extends 'base.html' %}
 {% block content %}
-<body class="bg-light">
-    <div class="container py-5">
-        <div class="row">
-            <div class="col-md-8 mx-auto">
-                <div class="card shadow-lg">
-                    <div class="card-body text-center">
-                        
-                        <h1 class="display-4 text-primary mb-4">Leonardoo</h1>
-                        <p class="lead mb-4">Nasa!</p>
-                        <div class="d-grid gap-2 col-6 mx-auto">
-                            <a href="{{url_for('planetas')}}" class="btn btn-primary btn-lg">Ver Planetas</a>
-                            <a href="{{url_for('marte')}}" class="btn btn-outline-primary btn-lg">Imagens de Marte</a>
-                        </div>
-                    </div>
+
+ <!-- Header / Hero Section -->
+ <header class="hero-section position-relative text-center text-white" style="background: url('../static/images/space-bg.jpg') no-repeat center center; background-size: cover; height: 80vh;">
+    <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('../static/images/fundo-header.png') no-repeat center center; background-size: cover;"></div>
+    <div class="container position-relative h-100 d-flex flex-column justify-content-center">
+      <h1 class="display-3 animate__animated animate__fadeInDown">Bem-vindo a OrbitAPi</h1>
+      <p class="lead animate__animated animate__fadeInUp">Explore os mistérios do espaço com a NASA!</p>
+      <div class="mt-4">
+        <a href="{{ url_for('constelacao') }}" class="btn btn-warning btn-lg me-2 animate__animated animate__zoomIn">Sua Constelação</a>
+        <a href="{{ url_for('planetas') }}" class="btn btn-outline-warning btn-lg me-2 animate__animated animate__zoomIn">Exoplanetas</a>
+        <a href="{{ url_for('marte') }}" class="btn btn-warning btn-lg me-2 animate__animated animate__zoomIn">Imagens de Marte</a>
+        <a href="{{ url_for('nasateste') }}" class="btn btn-outline-warning btn-lg animate__animated animate__zoomIn">Foto do Dia</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cards Section -->
+  <section class="cards-section py-5">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Card: Sua Constelação -->
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm hover-effect animate__animated animate__fadeInUp">
+            <img src="../static/images/constela.webp" class="card-img-top" alt="Sua Constelação" style="object-fit: cover; height: 200px;">
+            <div class="card-body">
+              <h5 class="card-title text-warning">Sua Constelação</h5>
+              <p class="card-text">Crie e personalize sua própria constelação.</p>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+              <a href="{{ url_for('constelacao') }}" class="stretched-link text-decoration-none text-warning">Explorar</a>
+            </div>
+          </div>
+        </div>
+        <!-- Card: Exoplanetas -->
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm hover-effect animate__animated animate__fadeInUp">
+            <img src="../static/images/exo.webp" class="card-img-top" alt="Exoplanetas" style="object-fit: cover; height: 200px;">
+            <div class="card-body">
+              <h5 class="card-title text-warning">Exoplanetas</h5>
+              <p class="card-text">Descubra novos mundos além do nosso sistema solar.</p>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+              <a href="{{ url_for('planetas') }}" class="stretched-link text-decoration-none text-warning">Ver Mais</a>
+            </div>
+          </div>
+        </div>
+        <!-- Card: Imagens de Marte -->
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm hover-effect animate__animated animate__fadeInUp">
+            <img src="../static/images/marte.webp" class="card-img-top" alt="Imagens de Marte" style="object-fit: cover; height: 200px;">
+            <div class="card-body">
+              <h5 class="card-title text-warning">Imagens de Marte</h5>
+              <p class="card-text">Veja as últimas imagens do planeta vermelho.</p>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+              <a href="{{ url_for('marte') }}" class="stretched-link text-decoration-none text-warning">Ver Galeria</a>
+            </div>
+          </div>
+        </div>
+        <!-- Card: Foto do Dia -->
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm hover-effect animate__animated animate__fadeInUp">
+            <img src="{{ data['hdurl'] }}" class="card-img-top" alt="Foto do Dia" style="object-fit: cover; height: 200px;">
+            <div class="card-body">
+              <h5 class="card-title text-warning">Foto do Dia</h5>
+              <p class="card-text">Acompanhe a foto mais impressionante do dia pela NASA.</p>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+              <a href="{{ url_for('nasateste') }}" class="stretched-link text-decoration-none text-warning">Ver Foto</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Diagonal Section com Logo e Ilustração -->
+  <section class="diagonal-section position-relative text-center text-white">
+    <div class="diagonal-bg"></div> <!-- Fundo diagonal -->
+    <div class="container position-relative z-2">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="logo-container">
+                    <img src="../static/images/orbit-removebg.png" alt="Orbit" class="img-fluid logo-animate">
                 </div>
             </div>
         </div>
     </div>
-
-<section class="secao1">
-    <div class="bloco-1-1"></div>
-    <img src="../static/images/orbit-removebg.png" alt="">
-    <div class="bloco-1-1"></div>
 </section>
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
 </body>
 
 {% endblock content %}
