@@ -36,7 +36,7 @@
             </div>
             <button type="submit" class="btn btn-warning w-100">Cadastrar</button>
         </form>
-
+    </div>
         <!-- Exibição de Constelações Cadastradas -->
         <h2 class="mt-5 text-center text-warning">Constelações Cadastradas</h2>
         <div class="row mt-3">
@@ -50,11 +50,27 @@
                             <p class="card-text">Magnitude: <strong>{{ constelacao.magnitude }}</strong></p>
                             <p class="card-text">Registrado por: <strong>{{ constelacao.nome_usuario }}</strong></p>
                             <p class="card-text">Data de Registro: {{ constelacao.data_registro }}</p>
+                            <button class="btn btn-outline-warning">
+                                <a href="{{url_for('edit', id=constelacao.id)}}">Editar</a>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="return confirm('Deseja mesmo excluir {{constelacao.nome_constelacao}} ?')">
+                                <a href="{{url_for('constelacao', id=constelacao.id)}}" ></a>
+                            </button>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
+
+        <p style="text-align: center;">
+            {%if constelacoes.has_prev %}
+            <a href="{{url_for('constelacao', page=constelacoes.prev_num) }}">Anterior</a>
+            {% endif %}
+
+            {%if constelacoes.has_next%}
+            <a href="{{url_for('constelacao', page=constelacoes.next_num) }}">Próximo</a>
+            {%endif%}
+        </p>
 
         
 </body>

@@ -125,6 +125,7 @@ def init_app(app):
             constelacao.magnitude = request.form["magnitude"]
             constelacao.nome_usuario = request.form["nome_usuario"]
             constelacao.data_registro = datetime.now().strftime("%Y-%m-%d %H:%M")
+            constelacao.imagem = request.form["imagem"]
             db.session.commit()
             return redirect(url_for('constelacao'))
     
