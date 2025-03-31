@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 load_dotenv()
 
+from models.database import db, Constelacao
 
 constelacoes = []
 
@@ -67,15 +68,23 @@ def init_app(app):
 
 
     @app.route('/sua_constelacao', methods=['GET', 'POST'])
-    def constelacao():
+    @app.route('/sua_constelacao/delete/<int:id>')
+    def constelacao(id=None):
+        if id:
+            constelacaoGet = Constelacao.query.get(id)
+            if constelacaoGet:
+                db.session.delete(constelacaoGet)
+                db.session.commit()
+            return redirect(url_for("constelacao"))
+
         if request.method == "POST":
-            nome_constelacao = request.form["nome_constelacao"]
-            distancia = request.form["distancia"]
-            magnitude = request.form["magnitude"]
-            nome_usuario = request.form["nome_usuario"]
+            nome_constelacao = request.form.get("nome_constelacao")
+            distancia = request.form.get("distancia")
+            magnitude = request.form.get("magnitude")
+            nome_usuario = request.form.get("nome_usuario")
+            data_registro = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-            imagem = request.files["imagem"]
-
+            imagem = request.files.get("imagem")
             if imagem and imagem.filename:
                 filename = secure_filename(imagem.filename)
                 caminho = os.path.join("uploads", filename)
@@ -86,18 +95,37 @@ def init_app(app):
             else:
                 caminho = "uploads/default.jpg"
             
-            data_registro = datetime.now().strftime("%Y-%m-%d %H:%M")
+            newConstelacao = Constelacao(
+             nome_constelacao=nome_constelacao,
+             distancia=distancia,
+             magnitude=magnitude,
+             nome_usuario=nome_usuario,
+             data_registro=data_registro,
+             imagem=caminho
+             # Adicionar outros campos se necessário (como descrição, data de descoberta, etc.)
+         )  
 
-            constelacoes.append({
-                "nome_constelação": nome_constelacao,
-                "distancia": distancia,
-                "magnitude": magnitude,
-                "nome_usuario": nome_usuario,
-                "data_registro": data_registro,
-                "imagem": caminho
-            })
-
+            db.session.add(newConstelacao)
+            db.session.commit()
             return redirect(url_for("constelacao"))
-
-
-        return render_template("constelacao.html", constelacoes=constelacoes)
+        
+        else:
+            page = request.args.get("page", 1, type=int) 
+            per_page = 6
+            constelacao_page = Constelacao.query.paginate(page=page, per_page=per_page)
+            return render_template("constelacao.html", constelacoes=constelacao_page)
+    
+    @app.route('/edit/<int:id>', methods=['POST', 'GET'])
+    def edit(id):
+        constelacao = Constelacao.query.get(id)
+        
+        if request.method == "POST":
+            constelacao.nome_constelacao = request.form["nome_constelacao"]
+            constelacao.distancia = request.form["distancia"]
+            constelacao.magnitude = request.form["magnitude"]
+            constelacao.nome_usuario = request.form["nome_usuario"]
+            constelacao.data_registro = datetime.now().strftime("%Y-%m-%d %H:%M")
+            db.session.commit()
+            return redirect(url_for('constelacao'))
+    
+        return render_template('editconstelacao.html', constelacao=constelacao)
