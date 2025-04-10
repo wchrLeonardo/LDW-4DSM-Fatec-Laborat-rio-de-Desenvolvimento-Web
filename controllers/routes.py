@@ -1,5 +1,4 @@
 from flask import render_template, request, redirect, url_for, current_app
-
 import urllib
 import json
 import requests
@@ -82,7 +81,7 @@ def init_app(app):
             distancia = request.form.get("distancia")
             magnitude = request.form.get("magnitude")
             nome_usuario = request.form.get("nome_usuario")
-            data_registro = datetime.now().strftime("%Y-%m-%d %H:%M")
+            data_registro = datetime.now().date()
 
             imagem = request.files.get("imagem")
             if imagem and imagem.filename:
@@ -124,8 +123,19 @@ def init_app(app):
             constelacao.distancia = request.form["distancia"]
             constelacao.magnitude = request.form["magnitude"]
             constelacao.nome_usuario = request.form["nome_usuario"]
-            constelacao.data_registro = datetime.now().strftime("%Y-%m-%d %H:%M")
-            constelacao.imagem = request.form["imagem"]
+            constelacao.data_registro = datetime.now().date()
+            imagem = request.files.get("imagem")
+
+            if imagem and imagem.filename:
+                filename = secure_filename(imagem.filename)
+                caminho = os.path.join("uploads", filename)
+                imagem.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
+                # Substitui barra invertida por barra normal no caminho (Windows)
+                caminho = caminho.replace("\\", "/")
+                constelacao.imagem = caminho
+
+            else:
+                caminho = "uploads/default.jpg"
             db.session.commit()
             return redirect(url_for('constelacao'))
     
